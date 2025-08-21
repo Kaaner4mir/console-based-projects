@@ -3,6 +3,8 @@ using System.Text;
 
 class Program
 {
+    static double _memory = 0;
+
     /// <summary>
     /// Programın giriş noktası. Sonsuz döngü ile kullanıcıdan işlem alır ve hesaplama yapar.
     /// </summary>
@@ -27,9 +29,15 @@ class Program
                 case 5: PerformBinaryOperation("Üs alma", Math.Pow); break;
                 case 6: PerformBinaryOperation("Kök alma", (radicand, index) => Math.Pow(radicand, 1.0 / index), rootCheck: true); break;
                 case 7: Factorial(); break;
+                case 8: Logarithm("Logaritma", (b, a) => Math.Log(a, b)); break;
+                case 9: Trigonometry(); break;
+                case 10: AddToMemory(); break;
+                case 11: SubstractFromMemory(); break;
+                case 12: RecallMemory(); break;
+                case 13: ClearMemory(); break;
+                case 14: Environment.Exit(0); break;
                 default: Invalid(); break;
             }
-
             WaitingScreen();
         }
     }
@@ -48,7 +56,7 @@ class Program
         try
         {
             double a = GetDoubleInput("\nBirinci sayıyı giriniz: ");
-            double b = GetDoubleInput("\nİkinci sayıyı giriniz: ");
+            double b = GetDoubleInput("İkinci sayıyı giriniz: ");
 
             if (divisionCheck)
             {
@@ -99,6 +107,144 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Kullanıcının girdiği taban ve argüman ile logaritma hesaplar.
+    /// </summary>
+    /// <param name="name">İşlemin adı</param>
+    /// <param name="operation">Logaritmayı hesaplayan fonksiyon</param>
+    private static void Logarithm(string name, Func<double, double, double> operation)
+    {
+        try
+        {
+            double baseNum = GetDoubleInput("\nTaban sayıyı giriniz: ");
+            double argument = GetDoubleInput("Argümanı giriniz: ");
+
+            if (baseNum <= 0 || baseNum == 1)
+                throw new Exception("Logaritmanın tabanı 0 veya 1 olamaz!");
+            if (argument <= 0)
+                throw new Exception("Logaritmanın argümanı 0 veya negatif olamaz!");
+
+            double result = Math.Log(argument, baseNum);
+
+            if (double.IsInfinity(result) || double.IsNaN(result))
+                throw new OverflowException("Sonuç sınırı aştı veya tanımsız!");
+
+            Console.WriteLine(ShowResult(result));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ShowException(ex));
+        }
+    }
+
+    /// <summary>
+    /// Kullanıcının girdiği derece ile trigonometrik işlemleri yapar.
+    /// </summary>
+    private static void Trigonometry()
+    {
+        Console.Clear();
+
+        Operation(ConsoleColor.Red, "1", "Sinüs");
+        Operation(ConsoleColor.Red, "2", "Kosinüs");
+        Operation(ConsoleColor.Red, "3", "Tanjant");
+        Operation(ConsoleColor.Red, "4", "Kotanjant");
+        Operation(ConsoleColor.Red, "5", "Sekant");
+        Operation(ConsoleColor.Red, "6", "Kosekant");
+
+        Console.Write("\n🔎 Yapmak istediğiniz işlemi numerik olarak giriniz (1-6): ");
+        if (!ushort.TryParse(Console.ReadLine(), out ushort act)) { Invalid(); return; }
+
+        switch (act)
+        {
+            case 1: TrigonometricOperation("Sinüs"); break;
+            case 2: TrigonometricOperation("Kosinüs"); break;
+            case 3: TrigonometricOperation("Tanjant"); break;
+            case 4: TrigonometricOperation("Kotanjant"); break;
+            case 5: TrigonometricOperation("Sekant"); break;
+            case 6: TrigonometricOperation("Kosekant"); break;
+        }
+    }
+
+    /// <summary>
+    /// Verilen açıya (derece cinsinden) göre trigonometrik işlemleri hesaplar.
+    /// Derece değeri otomatik olarak radyana çevrilir ve ilgili trigonometrik fonksiyon çalıştırılır.
+    /// </summary>
+    /// <param name="name">
+    /// Yapılacak işlem adı. Desteklenen değerler:
+    /// "Sinüs", "Kosinüs", "Tanjant", "Kotanjant", "Sekant", "Kosekant".
+    /// </param>
+    private static void TrigonometricOperation(string name)
+    {
+        try
+        {
+            double degree = GetDoubleDegree("\nDereceyi giriniz: ");
+            double radian = degree * (Math.PI / 180);
+
+            if (name == "Sinüs")
+                Console.WriteLine(ShowResult(Math.Sin(radian)));
+            else if (name == "Kosinüs")
+                Console.WriteLine(ShowResult(Math.Cos(radian)));
+            else if (name == "Tanjant")
+                Console.WriteLine(ShowResult(Math.Tan(radian)));
+            else if (name == "Kotanjant")
+                Console.WriteLine(ShowResult(1.0 / Math.Tan(radian)));
+            else if (name == "Sekant")
+                Console.WriteLine(ShowResult(1.0 / Math.Cos(radian)));
+            else if (name == "Kosekant")
+                Console.WriteLine(ShowResult(1.0 / Math.Sin(radian)));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ShowException(ex));
+        }
+    }
+
+    /// <summary>
+    /// Hafızaya ekleme işlemini yapar.
+    /// </summary>
+    private static void AddToMemory()
+    {
+        double inputVal = GetDoubleInput("\nHafızaya eklemek istediğiniz sayıyı giriniz: ");
+
+        _memory += inputVal;
+
+        Valid();
+    }
+
+    /// <summary>
+    /// Hafızadan silme işlemini yapar
+    /// </summary>
+    private static void SubstractFromMemory()
+    {
+        double inputVal = GetDoubleInput("\nHafızadan çıkarmak istediğiniz sayıyı giriniz: ");
+
+        _memory -= inputVal;
+
+        Valid();
+    }
+
+    /// <summary>
+    /// Hafızayı resetler
+    /// </summary>
+    private static void ClearMemory()
+    {
+        _memory = 0;
+
+        Valid();
+    }
+
+    /// <summary>
+    /// Hafızayı gösterir.
+    /// </summary>
+    private static void RecallMemory()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"\n🧠 Hafıza : {_memory}");
+        Console.ResetColor();
+
+        Valid();
+    }
+
     #endregion
 
     #region Yardımcı Fonksiyonlar
@@ -109,6 +255,21 @@ class Program
     /// <param name="message">Kullanıcıya gösterilecek mesaj</param>
     /// <returns>Kullanıcının girdiği sayı</returns>
     private static double GetDoubleInput(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.Write(message);
+        if (!double.TryParse(Console.ReadLine(), out double value))
+        {
+            Invalid();
+            throw new Exception("Geçersiz sayı girdiniz!");
+        }
+        return value;
+    }
+
+    /// <summary>
+    /// Kullanıcıdan double tipinde derece alır.
+    /// </summary>
+    private static double GetDoubleDegree(string message)
     {
         Console.ForegroundColor = ConsoleColor.White;
         Console.Write(message);
@@ -173,7 +334,7 @@ class Program
         Operation(ConsoleColor.Red, " 7", "Faktöriyel");
         Operation(ConsoleColor.Red, " 8", "Logaritma");
         Operation(ConsoleColor.Red, " 9", "Trigonometri");
-        Operation(ConsoleColor.Red, "10", "Hafızaya ekleme");
+        Operation(ConsoleColor.Red, "10", "Hafızaya ekle");
         Operation(ConsoleColor.Red, "11", "Hafızadan çıkar");
         Operation(ConsoleColor.Red, "12", "Hafızayı göster");
         Operation(ConsoleColor.Red, "13", "Hafızayı sıfırla");
@@ -187,6 +348,16 @@ class Program
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\n⚠️ Geçersiz bir işlem yaptınız!");
+        Console.ResetColor();
+    }
+
+    /// <summary>
+    /// Kullanıcı işlemi tamamladığında bilgi mesajı verir.
+    /// </summary>
+    private static void Valid()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("\n✔️ İşleminiz başarıyla gerçekleşti.");
         Console.ResetColor();
     }
 
