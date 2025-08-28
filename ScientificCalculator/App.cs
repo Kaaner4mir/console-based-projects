@@ -28,6 +28,7 @@ class App
                 case 8: { double result = Modulus((dividend, divisor) => dividend % divisor); ShowResult(result); break; }
                 case 9: { double result = Logarithm((baseNum, argument) => Math.Log(baseNum, argument)); ShowResult(result); break; }
                 case 10: Trigonometry(); break;
+                case 11: MemoryTransaction(); break;
                 default: Message(ConsoleColor.Red, ExceptionMessage("Geçersiz seçim!")); break;
             }
 
@@ -189,7 +190,7 @@ class App
     private static void ShowMemory()
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Hafıza : {_memory}");
+        Console.WriteLine($"\nHafıza : {_memory}");
         Console.ResetColor();
     }
 
@@ -198,49 +199,56 @@ class App
     /// </summary>
     private static void Trigonometry()
     {
-        DisplayTrigonometryMenu();
-
-        int choice = GetIntegerInput("Yapmak istediğiniz trigonometrik işlemi numerik olarak seçiniz (1-6) : ");
-        double degree = GetDoubleInput("Yapmak istediğiniz trigonometrik işlem için derece giriniz : ");
-        double radian = degree * (Math.PI / 180);
-
-        string funcName = "";
-        double result;
-
-        switch (choice)
+        try
         {
-            case 1:
-                result = Math.Sin(radian);
-                funcName = "Sin";
-                break;
-            case 2:
-                result = Math.Cos(radian);
-                funcName = "Cos";
-                break;
-            case 3:
-                result = Math.Tan(radian);
-                funcName = "Tan";
-                break;
-            case 4:
-                result = 1.0 / Math.Tan(radian);
-                funcName = "Cot";
-                break;
-            case 5:
-                result = 1.0 / Math.Cos(radian);
-                funcName = "Sec";
-                break;
-            case 6:
-                result = 1.0 / Math.Sin(radian);
-                funcName = "Csc";
-                break;
-            default:
-                Message(ConsoleColor.Red, "Geçersiz trigonometrik işlem!");
-                return;
-        }
+            DisplayTrigonometryMenu();
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"\n✅ {funcName}({degree}°) = {result}");
-        Console.ResetColor();
+            int choice = GetIntegerInput("Yapmak istediğiniz trigonometrik işlemi numerik olarak seçiniz (1-6) : ");
+            double degree = GetDoubleInput("Yapmak istediğiniz trigonometrik işlem için derece giriniz : ");
+            double radian = degree * (Math.PI / 180);
+
+            string funcName = "";
+            double result;
+
+            switch (choice)
+            {
+                case 1:
+                    result = Math.Sin(radian);
+                    funcName = "Sin";
+                    break;
+                case 2:
+                    result = Math.Cos(radian);
+                    funcName = "Cos";
+                    break;
+                case 3:
+                    result = Math.Tan(radian);
+                    funcName = "Tan";
+                    break;
+                case 4:
+                    result = 1.0 / Math.Tan(radian);
+                    funcName = "Cot";
+                    break;
+                case 5:
+                    result = 1.0 / Math.Cos(radian);
+                    funcName = "Sec";
+                    break;
+                case 6:
+                    result = 1.0 / Math.Sin(radian);
+                    funcName = "Csc";
+                    break;
+                default:
+                    Message(ConsoleColor.Red, "Geçersiz trigonometrik işlem!");
+                    return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n✅ {funcName}({degree}°) = {result}");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            ExceptionMessage("Bilinmeyen bir hata oluştu");
+        }
     }
 
     /// <summary>
@@ -250,27 +258,34 @@ class App
     {
         DisplayMemoryTransaction();
 
-        int choice = GetIntegerInput("Yapmak istediğiniz hafıza işlemini numerik olarak giriniz (1-4) : ");
-        double amount = GetDoubleInput("Sayıyı giriniz : ");
+        int choice = GetIntegerInput("Yapmak istediğiniz işlemi numerik olarak seçiniz (1-4) : ");
 
-        switch (choice)
+        if (choice == 1)
         {
-            case 1:
-                _memory += amount;
-                break;
-            case 2:
-                _memory -= amount;
-                break;
-            case 3:
-                ShowMemory();
-                break;
-            case 4:
-                _memory = 0;
-                break;
-            default:
-                Message(ConsoleColor.Red, "Geçersiz işlem!");
-                return;
+            double amount = GetDoubleInput("Sayıyı giriniz : ");
+            _memory += amount;
+            ShowMemory();
         }
+        else if (choice == 2)
+        {
+            double amount = GetDoubleInput("Sayıyı giriniz : ");
+            _memory -= amount;
+            ShowMemory();
+        }
+        else if (choice == 3)
+        {
+            ShowMemory();
+        }
+        else if (choice == 4)
+        {
+            _memory = 0;
+            ShowMemory();
+        }
+        else
+        {
+            Message(ConsoleColor.Red, ExceptionMessage("Geçersiz seçim!"));
+        }
+
     }
 
     #endregion
@@ -335,16 +350,17 @@ class App
     {
         Console.Clear();
 
-        Operation(" 1", "Toplama         ➕");
-        Operation(" 2", "Çıkarma         ➖");
-        Operation(" 3", "Çarpma          ✖️");
-        Operation(" 4", "Bölme           ➗");
-        Operation(" 5", "Üs alma         xⁿ");
-        Operation(" 6", "Kök alma        ⁿ√x");
-        Operation(" 7", "Faktöriyel      ❗");
-        Operation(" 8", "Mod alma         %");
-        Operation(" 9", "Logaritma      logx(y)");
-        Operation("10", "Trigonometri     📐");
+        Operation(" 1", "Toplama           ➕");
+        Operation(" 2", "Çıkarma           ➖");
+        Operation(" 3", "Çarpma            ✖️");
+        Operation(" 4", "Bölme             ➗");
+        Operation(" 5", "Üs alma           xⁿ");
+        Operation(" 6", "Kök alma          ⁿ√x");
+        Operation(" 7", "Faktöriyel        ❗");
+        Operation(" 8", "Mod alma           %");
+        Operation(" 9", "Logaritma        logx(y)");
+        Operation("10", "Trigonometri       📐");
+        Operation("11", "Hafıza işlemleri   🧠");
     }
 
     /// <summary>
