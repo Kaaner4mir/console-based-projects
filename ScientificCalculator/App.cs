@@ -26,7 +26,9 @@ class App
                 case 4: { double result = PerformOperation("Bölme", (val1, val2) => val1 / val2); ShowResult(result); break; }
                 case 5: { double result = Exponentiation((baseNum, exponent) => Math.Pow(baseNum, exponent)); ShowResult(result); break; }
                 case 6: { double result = Root((radicand, expansion) => Math.Pow(radicand, 1.0 / expansion)); ShowResult(result); break; }
-
+                case 7: Factorial(); break;
+                case 8: { double result = Modulus((dividend, divisor) => dividend % divisor); ShowResult(result); break; }
+                case 9: { double result = Logarithm((baseNum, argument) => Math.Log(baseNum, argument)); ShowResult(result); break; }
                 default: Message(ConsoleColor.Red, ExceptionMessage("Geçersiz seçim!")); break;
             }
 
@@ -58,6 +60,79 @@ class App
         return result;
 
     }
+
+    /// <summary>
+    /// Faktöriyel işlemlerini yapar.
+    /// </summary>
+    private static void Factorial()
+    {
+        try
+        {
+            int number = GetIntegerInput("Faktöriyelini öğrenmek istediğiniz sayıyı giriniz : ");
+
+            int result = 1;
+
+            if (number < 0)
+                Message(ConsoleColor.Red, ExceptionMessage("Girmiş olduğunuz sayı pozitif olmalıdır!"));
+            else
+
+                for (int i = number; i > 0; i--)
+                {
+                    result *= i;
+                }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n✅ İşleminin sonucu: {result}");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            ExceptionMessage(ex.Message);
+        }
+
+    }
+
+    private static double Logarithm(Func<double, double, double> operation)
+    {
+        double baseNum = GetDoubleInput("⬇️ Taban sayıyı giriniz : ");
+        double argument = GetDoubleInput("⬆️ Logaritması alınacak sayıyı giriniz : ");
+
+        if (baseNum <= 0 || baseNum == 1)
+        {
+            Message(ConsoleColor.Red, ExceptionMessage("Taban pozitif olmalı ve 1 olamaz!"));
+            return double.NaN;
+        }
+
+        if (argument <= 0)
+        {
+            Message(ConsoleColor.Red, ExceptionMessage("Logaritma alınacak sayı pozitif olmalı!"));
+            return double.NaN;
+        }
+
+        double result = operation(argument, baseNum);
+        return result;
+    }
+
+
+    /// <summary>
+    /// Mod işlemlerini yapar.
+    /// </summary>
+    private static double Modulus(Func<double, double, double> operation)
+    {
+        double dividend = GetDoubleInput("🔢 Bölünen sayıyı giriniz : ");
+        double divisor = GetDoubleInput("✂️ Bölen sayıyı giriniz  : ");
+
+        double result = operation(dividend, divisor);
+
+        if (divisor == 0)
+        {
+            Message(ConsoleColor.Red, ExceptionMessage("Bölen 0 olamaz!"));
+            return double.NaN;
+        }
+
+        return result;
+    }
+
     /// <summary>
     /// Matematiksel işlem yapar.
     /// </summary>
@@ -77,6 +152,7 @@ class App
 
         return result;
     }
+
     /// <summary>
     /// Köklü sayı işlemini yapar.
     /// </summary>
@@ -128,6 +204,25 @@ class App
     }
 
     /// <summary>
+    /// Kullanıcıdan integer değer alır.
+    /// </summary>
+    private static int GetIntegerInput(string message)
+    {
+        while (true)
+        {
+            Console.Write($"\n{message}");
+            if (int.TryParse(Console.ReadLine(), out int value))
+            {
+                return value;
+            }
+            else
+            {
+                Message(ConsoleColor.Red, "Lütfen geçerli bir sayı giriniz!");
+            }
+        }
+    }
+
+    /// <summary>
     ///  Konsola ana işlem menüsünü görüntüler.
     /// </summary>
     private static void DisplayMenu()
@@ -139,7 +234,9 @@ class App
         Operation("4", "Bölme        ➗");
         Operation("5", "Üs alma      xⁿ");
         Operation("6", "Kök alma     ⁿ√x");
-
+        Operation("7", "Faktöriyel   ❗");
+        Operation("8", "Mod alma      %");
+        Operation("9", "Logaritma   logx(y)");
     }
 
     /// <summary>
