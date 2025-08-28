@@ -29,6 +29,7 @@ class App
                 case 9: { double result = Logarithm((baseNum, argument) => Math.Log(baseNum, argument)); ShowResult(result); break; }
                 case 10: Trigonometry(); break;
                 case 11: MemoryTransaction(); break;
+                case 12: Exit(); break;
                 default: Message(ConsoleColor.Red, ExceptionMessage("Geçersiz seçim!")); break;
             }
 
@@ -361,6 +362,7 @@ class App
         Operation(" 9", "Logaritma        logx(y)");
         Operation("10", "Trigonometri       📐");
         Operation("11", "Hafıza işlemleri   🧠");
+        Operation("12", "Exit               🔚");
     }
 
     /// <summary>
@@ -384,6 +386,26 @@ class App
     private static string ExceptionMessage(string exceptionMessage)
     {
         return $"\n⚠️ Bir hata oluştu : {exceptionMessage}";
+    }
+
+    private static void Exit()
+    {
+        Console.Write("\nÇıkmak istediğinize emin misiniz (E/H) : ");
+        string? act = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(act))
+        {
+            Message(ConsoleColor.Red, ExceptionMessage("Geçersiz bir işlem yaptınız!")); return;
+        }
+        else
+        {
+            if (act.ToLower() == "e")
+                Environment.Exit(0);
+            else if (act.ToLower() == "h")
+                return;
+            else
+                Message(ConsoleColor.Red, ExceptionMessage("Geçersiz bir işlem yaptınız!"));
+        }
     }
 
     /// <summary>
