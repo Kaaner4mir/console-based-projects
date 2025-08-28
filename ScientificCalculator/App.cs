@@ -2,6 +2,8 @@
 
 class App
 {
+    static double _memory = 0;
+
     public static void Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
@@ -12,11 +14,7 @@ class App
             DisplayMenu();
 
             Console.Write("\nYapmak istediğiniz işlemi numerik olarak giriniz (1-?) : ");
-            if (!short.TryParse(Console.ReadLine(), out short inputOperation))
-            {
-                Message(ConsoleColor.Red, ExceptionMessage("Geçersiz bir işlem yaptınız!"));
-                continue;
-            }
+            if (!short.TryParse(Console.ReadLine(), out short inputOperation)) { Message(ConsoleColor.Red, ExceptionMessage("Geçersiz bir işlem yaptınız!")); continue; }
 
             switch (inputOperation)
             {
@@ -29,6 +27,7 @@ class App
                 case 7: Factorial(); break;
                 case 8: { double result = Modulus((dividend, divisor) => dividend % divisor); ShowResult(result); break; }
                 case 9: { double result = Logarithm((baseNum, argument) => Math.Log(baseNum, argument)); ShowResult(result); break; }
+                case 10: Trigonometry(); break;
                 default: Message(ConsoleColor.Red, ExceptionMessage("Geçersiz seçim!")); break;
             }
 
@@ -92,6 +91,9 @@ class App
 
     }
 
+    /// <summary>
+    /// Verilen bir işlemi kullanarak belirtilen sayının logaritmasını hesaplar.
+    /// </summary>
     private static double Logarithm(Func<double, double, double> operation)
     {
         double baseNum = GetDoubleInput("⬇️ Taban sayıyı giriniz : ");
@@ -112,7 +114,6 @@ class App
         double result = operation(argument, baseNum);
         return result;
     }
-
 
     /// <summary>
     /// Mod işlemlerini yapar.
@@ -182,7 +183,99 @@ class App
         return result;
     }
 
+    /// <summary>
+    /// Hafızayı gösterir.
+    /// </summary>
+    private static void ShowMemory()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Hafıza : {_memory}");
+        Console.ResetColor();
+    }
+
+    /// <summary>
+    /// Trigonometrik işlemleri yapar.
+    /// </summary>
+    private static void Trigonometry()
+    {
+        DisplayTrigonometryMenu();
+
+        int choice = GetIntegerInput("Yapmak istediğiniz trigonometrik işlemi numerik olarak seçiniz (1-6) : ");
+        double degree = GetDoubleInput("Yapmak istediğiniz trigonometrik işlem için derece giriniz : ");
+        double radian = degree * (Math.PI / 180);
+
+        string funcName = "";
+        double result;
+
+        switch (choice)
+        {
+            case 1:
+                result = Math.Sin(radian);
+                funcName = "Sin";
+                break;
+            case 2:
+                result = Math.Cos(radian);
+                funcName = "Cos";
+                break;
+            case 3:
+                result = Math.Tan(radian);
+                funcName = "Tan";
+                break;
+            case 4:
+                result = 1.0 / Math.Tan(radian);
+                funcName = "Cot";
+                break;
+            case 5:
+                result = 1.0 / Math.Cos(radian);
+                funcName = "Sec";
+                break;
+            case 6:
+                result = 1.0 / Math.Sin(radian);
+                funcName = "Csc";
+                break;
+            default:
+                Message(ConsoleColor.Red, "Geçersiz trigonometrik işlem!");
+                return;
+        }
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"\n✅ {funcName}({degree}°) = {result}");
+        Console.ResetColor();
+    }
+
+    /// <summary>
+    /// Hafıza işlemlerini yapar.
+    /// </summary>
+    private static void MemoryTransaction()
+    {
+        DisplayMemoryTransaction();
+
+        int choice = GetIntegerInput("Yapmak istediğiniz hafıza işlemini numerik olarak giriniz (1-4) : ");
+        double amount = GetDoubleInput("Sayıyı giriniz : ");
+
+        switch (choice)
+        {
+            case 1:
+                _memory += amount;
+                break;
+            case 2:
+                _memory -= amount;
+                break;
+            case 3:
+                ShowMemory();
+                break;
+            case 4:
+                _memory = 0;
+                break;
+            default:
+                Message(ConsoleColor.Red, "Geçersiz işlem!");
+                return;
+        }
+    }
+
     #endregion
+
+    #region Diğer işlemler
 
     /// <summary>
     /// Kullanıcıdan double değer alır.
@@ -223,20 +316,50 @@ class App
     }
 
     /// <summary>
-    ///  Konsola ana işlem menüsünü görüntüler.
+    /// Konsolda hafıza işlemlem menüsünü görüntüler.
+    /// </summary>
+    private static void DisplayMemoryTransaction()
+    {
+        Console.Clear();
+
+        Operation("1", "Hafızaya ekle");
+        Operation("2", "Hafızadan çıkar");
+        Operation("3", "Hafızayı getir");
+        Operation("4", "Hafızayı sıfırla");
+    }
+
+    /// <summary>
+    ///  Konsolda ana işlem menüsünü görüntüler.
     /// </summary>
     private static void DisplayMenu()
     {
         Console.Clear();
-        Operation("1", "Toplama      ➕");
-        Operation("2", "Çıkarma      ➖");
-        Operation("3", "Çarpma       ✖️");
-        Operation("4", "Bölme        ➗");
-        Operation("5", "Üs alma      xⁿ");
-        Operation("6", "Kök alma     ⁿ√x");
-        Operation("7", "Faktöriyel   ❗");
-        Operation("8", "Mod alma      %");
-        Operation("9", "Logaritma   logx(y)");
+
+        Operation(" 1", "Toplama         ➕");
+        Operation(" 2", "Çıkarma         ➖");
+        Operation(" 3", "Çarpma          ✖️");
+        Operation(" 4", "Bölme           ➗");
+        Operation(" 5", "Üs alma         xⁿ");
+        Operation(" 6", "Kök alma        ⁿ√x");
+        Operation(" 7", "Faktöriyel      ❗");
+        Operation(" 8", "Mod alma         %");
+        Operation(" 9", "Logaritma      logx(y)");
+        Operation("10", "Trigonometri     📐");
+    }
+
+    /// <summary>
+    /// Konsola trigonometrik işlem menüsünü görüntüler.
+    /// </summary>
+    private static void DisplayTrigonometryMenu()
+    {
+        Console.Clear();
+
+        Operation("1", "Sine");
+        Operation("2", "Cosine");
+        Operation("3", "Tangent");
+        Operation("4", "Cotangent");
+        Operation("5", "Secant");
+        Operation("6", "Cosecant");
     }
 
     /// <summary>
@@ -319,4 +442,6 @@ class App
 
         Console.CursorVisible = true;
     }
+
+    #endregion
 }
