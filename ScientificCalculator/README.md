@@ -193,7 +193,7 @@ Factorial(5): 120
 
 ## 👨‍💻 Developer
 
-**Kaaner4mir** - [GitHub Profile](https://github.com/your-username)
+**Kaaner4mir** - [GitHub Profile](https://github.com/Kaaner4mir)
 
 ## 🙏 Acknowledgments
 
