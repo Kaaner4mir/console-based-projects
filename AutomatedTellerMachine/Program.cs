@@ -50,36 +50,30 @@ class Program
         const int registeredPassword = 1111;
         short attempt = 0;
 
-        attempt = UserControl(attempt, registeredPassword);
+        //attempt = UserControl(attempt, registeredPassword);
 
         while (true)
         {
             try
             {
-                SpinnerAnimation();
+                //SpinnerAnimation();
                 DisplayMenu();
 
                 string choice = GetInput<string>("\n👉 Enter the operation you want to perform numerically : ");
 
                 switch (choice)
                 {
-                    case "1":
-                        ShowBalance();
-                        break;
-                    case "2":
-                        DepositMoney();
-                        break;
-                    case "3":
-                        WithdrawMoney();
-                        break;
-                    default:
-                        throw new InvalidOperationException("Invalid menu selection! Please choose a valid option.");
+                    case "1": ShowBalance(); break;
+                    case "2": DepositMoney(); break;
+                    case "3": WithdrawMoney(); break;
+                    case "4": Payments(); break;
+                    case "6": ShowTransactions(); break;
+                    default: throw new InvalidOperationException("Invalid menu selection! Please choose a valid option.");
                 }
             }
             catch (Exception ex)
             {
                 WriteColored($"\n⚠️ Error : {ex.Message}", ConsoleColor.Red);
-                WaitingScreen();
             }
 
             WaitingScreen();
@@ -129,6 +123,7 @@ class Program
                     });
 
                     WriteColored($"\n✅ Successfully deposited {account.Currency}{depositAmount:N2} at {DateTime.Now:dd/MM/yyyy HH:mm}", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Green);
                 }
             }
         }
@@ -174,6 +169,8 @@ class Program
                     });
 
                     WriteColored($"\n✅ Successfully withdrawed {account.Currency}{withdrawAmount:N2} at {DateTime.Now:dd/MM/yyyy HH:mm}", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Green);
+
                 }
             }
         }
@@ -183,11 +180,18 @@ class Program
         }
     }
 
+    private static void Payments()
+    {
+        DisplayPaymentsMenu();
+    }
+
     private static void ShowTransactions()
     {
         Console.Clear();
+        ListAccounts();
+        ListingCards();
         int id = GetInput<int>("📋 Enter the account ID to view transactions: ");
-
+        Console.Clear();
         var account = _accounts.FirstOrDefault(x => x.AccountId == id);
 
         if (account == null)
@@ -211,7 +215,148 @@ class Program
         }
     }
 
+    #endregion
 
+    #region Display methods
+
+    /// <summary>
+    /// Displays the main menu.
+    /// </summary>
+    private static void DisplayMenu()
+    {
+        Console.Clear();
+        WriteColored(" << 📋 MENU >>\n", ConsoleColor.Cyan);
+        WriteColored("1. List Accounts", ConsoleColor.Yellow);
+        WriteColored("2. Deposit Money", ConsoleColor.Green);
+        WriteColored("3. Withdraw Money", ConsoleColor.Red);
+        WriteColored("4. Payments", ConsoleColor.White);
+        WriteColored("5. Applications", ConsoleColor.Blue);
+        WriteColored("6. Transactions", ConsoleColor.Magenta);
+    }
+
+    private static void DisplayPaymentsMenu()
+    {
+        Console.Clear();
+
+        WriteColored(" << 📋PAYMENTS MENU >>\n", ConsoleColor.Cyan);
+        WriteColored("1. Bill payment", ConsoleColor.Yellow);
+        WriteColored("2. Credit card debt payment", ConsoleColor.Green);
+        WriteColored("3. Loan payment", ConsoleColor.Magenta);
+        WriteColored("4. Tax payment", ConsoleColor.White);
+        WriteColored("5. Previous page", ConsoleColor.Red);
+
+        string choice = GetInput<string>("\n👉 Enter the operation you want to perform numerically : ");
+
+        switch (choice)
+        {
+            case "1": BillPayment(); break;
+            //case "2": CreditCardDebtPayment(); break;
+            //case "3": LoanPayment(); break;
+            //case "4": TaxPayment(); break;
+            //case "5": return;
+            default: throw new InvalidOperationException("Invalid menu selection! Please choose a valid option.");
+        }
+    }
+
+    #endregion
+
+    #region Payments operations
+
+    private static void BillPayment()
+    {
+        Console.Clear();
+        WriteColored("1. Electricity => €45.0458", ConsoleColor.Red);
+        WriteColored("2. Water       => €19.8461", ConsoleColor.White);
+        WriteColored("3. Gas         => €78.9515", ConsoleColor.Magenta);
+        WriteColored("4. Phone       => €24.0359", ConsoleColor.Yellow);
+        WriteColored("5. Internet    => €80.4581", ConsoleColor.Blue);
+        WriteColored("6. Previous page", ConsoleColor.Cyan);
+
+        string choice = GetInput<string>("\n👉 Select the invoice you want to pay numerically : ");
+
+        Console.Clear();
+        ListAccounts();
+
+        string id = GetInput<string>("\n👉 Select the invoice you want to pay numerically : ");
+
+        var account = _accounts.FirstOrDefault(x => x.AccountId == Convert.ToUInt32(id));
+
+        if (account != null)
+        {
+            switch (choice)
+            {
+                case "1":
+                    account.Balance -= 45.0458m;
+                    WriteColored($"\n✅ Successful operation\n", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Red);
+                    account.Transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Now,
+                        Type = "Payment",
+                        Amount = 45.0458m,
+                        Currency = account.Currency
+                    });
+                    break;
+                case "2":
+                    account.Balance -= 19.8461m;
+                    WriteColored($"\n🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Red);
+                    account.Transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Now,
+                        Type = "Payment",
+                        Amount = 19.8461m,
+                        Currency = account.Currency
+                    });
+                    break;
+                case "3":
+                    account.Balance -= 78.9515m;
+                    WriteColored($"\n✅ Successful operation\n", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Green);
+                    account.Transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Now,
+                        Type = "Payment",
+                        Amount = 78.9515m,
+                        Currency = account.Currency
+                    });
+                    break;
+                case "4":
+                    account.Balance -= 24.0359m;
+                    WriteColored($"\n✅ Successful operation\n", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Green);
+                    account.Transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Now,
+                        Type = "Payment",
+                        Amount = 24.0359m,
+                        Currency = account.Currency
+                    });
+                    break;
+                case "5":
+                    account.Balance -= 80.4581m;
+                    WriteColored($"\n✅ Successful operation\n", ConsoleColor.Green);
+                    WriteColored($"🆕 New balance {account.Currency}{account.Balance:N2}", ConsoleColor.Green);
+                    account.Transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Now,
+                        Type = "Payment",
+                        Amount = 80.4581m,
+                        Currency = account.Currency
+                    });
+                    break;
+                case "6":
+                    DisplayPaymentsMenu();
+                    break;
+                default: throw new InvalidOperationException("Invalid menu selection! Please choose a valid option.");
+
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException("Invalid menu selection! Please choose a valid option.");
+        }
+    }
 
     #endregion
 
@@ -280,21 +425,6 @@ class Program
 
             WriteColored(new string('-', 40), ConsoleColor.DarkCyan);
         }
-    }
-
-    /// <summary>
-    /// Displays the main menu.
-    /// </summary>
-    private static void DisplayMenu()
-    {
-        Console.Clear();
-        WriteColored(" << 📋 MENU >>\n", ConsoleColor.Cyan);
-        WriteColored("1. List Accounts", ConsoleColor.Yellow);
-        WriteColored("2. Deposit Money", ConsoleColor.Green);
-        WriteColored("3. Withdraw Money", ConsoleColor.Red);
-        WriteColored("4. Payments", ConsoleColor.White);
-        WriteColored("5. Applications", ConsoleColor.Blue);
-        WriteColored("6. Transactions", ConsoleColor.Magenta);
     }
 
     /// <summary>
