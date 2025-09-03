@@ -1,4 +1,4 @@
-﻿class Account
+﻿public class Account
 {
     public int AccountId { get; set; }
     public string? AccountName { get; set; }
@@ -10,7 +10,7 @@
 
 }
 
-class CreditCard : Account
+public class CreditCard : Account
 {
     public int AccountId { get; set; }
     public string? CardName { get; set; }

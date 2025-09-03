@@ -1,4 +1,4 @@
-﻿class Transaction
+﻿public class Transaction
 {
     public DateTime Date { get; set; }
     public string Type { get; set; } = string.Empty;

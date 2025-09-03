@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScientificCalculator", "Sci
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedTellerMachine", "AutomatedTellerMachine\AutomatedTellerMachine.csproj", "{686EAECD-CFFD-4530-B3AB-8FCD387A4A07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtmSimlulation", "AtmSimlulation\AtmSimlulation.csproj", "{BBFCB31C-FC4A-4A2B-8717-EBBE2E29EF41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{686EAECD-CFFD-4530-B3AB-8FCD387A4A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{686EAECD-CFFD-4530-B3AB-8FCD387A4A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{686EAECD-CFFD-4530-B3AB-8FCD387A4A07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBFCB31C-FC4A-4A2B-8717-EBBE2E29EF41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBFCB31C-FC4A-4A2B-8717-EBBE2E29EF41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBFCB31C-FC4A-4A2B-8717-EBBE2E29EF41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBFCB31C-FC4A-4A2B-8717-EBBE2E29EF41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
